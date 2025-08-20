@@ -22,6 +22,8 @@ async function scrapeJobsFromIndexPages() {
   return allJobs;
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // Scrapes job descriptions from individual job pages - processes one at a time to avoid server blocking
 async function scrapeJobDescription(allJobs) {
   // Parallel processing - faster but may trigger rate limiting
@@ -43,6 +45,8 @@ async function scrapeJobDescription(allJobs) {
       "https://braigslist.vercel.app/" + job.url
     );
     console.log("Processing job: " + job.url);
+    //add a delay to avoid being blocked by the server
+    await sleep(1000);
     const $ = cheerio.load(jobDescriptionPage.data);
     const jobDescription = $("div").text();
     allJobsWithDescription.push({ ...job, description: jobDescription });
